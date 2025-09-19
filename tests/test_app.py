@@ -14,6 +14,14 @@ def test_root_deve_retornar_hello_world():
     3. Assert (afirmar): verificar se o resultado obtido é o esperado.
     """
     client = TestClient(app)
-    response = client.get('/') #captura a resposta da requisição
+    response = client.get('/')  # captura a resposta da requisição
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {'message': 'World'}
+
+    response = client.post('/users/')
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {
+        'username': 'Yuri',
+        'email': 'yuri.tayrocnp@gmail.com',
+        'password': '46478790',
+    }
