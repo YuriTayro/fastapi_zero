@@ -1,7 +1,10 @@
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 
 from fastapi_zero.app import app
+from fastapi_zero.models import table_registry
 
 
 # Bloco de testes reutilizaveis
@@ -9,15 +12,14 @@ from fastapi_zero.app import app
 def client():
     return TestClient(app)
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
-from fastapi_zero.models import table_registry
 
+@pytest.fixture
 def session():
-    #cria a conexão com o banco de dados em memória
+    # cria a conexão com o banco de dados em memória
     engine = create_engine('sqlite:///:memory:')
-    #vai criar todas as tabelas no banco de dados em memória
+    # vai criar todas as tabelas no banco de dados em memória
     table_registry.metadata.create_all(engine)
     # abrir a sessão com o banco de dados em memória
     with Session(engine) as session:
         yield session
+    table_registry.metadata.drop_all(engine)
